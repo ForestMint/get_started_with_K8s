@@ -30,8 +30,16 @@ $ vagrant --version
 
 ## 🖥 Power the machines on
 
-in each folder (./master, ./worker-1, ./worker-2), run the following command
+in each folder (./master, ./worker-1, ./worker-2), run the following commands
 
 ```sh
 $ vagrant up
+```
+
+## 🔐 Setup SSH
+
+in each folder (./master, ./worker-1, ./worker-2), run the following commands
+
+```sh
+$ vagrant ssh
 ```
