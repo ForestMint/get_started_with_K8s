@@ -1,4 +1,4 @@
-# ☸️ A simple training to run a K8s custer
+# ☸️ A simple training to run a K8s custer (based on [a YT vieo](https://www.youtube.com/watch?v=_WW16Sp8-Jw))
 
 ## 📋 Prerequisites (for Linux Ubuntu 24.04 system)
 
@@ -38,7 +38,7 @@ $ vagrant --version
 $ vagrant up
 ```
 
-🔐 Setup SSH
+🔐 Connect with SSH
 
 ```sh
 $ vagrant ssh
@@ -50,18 +50,39 @@ Turn the swap off to allow the kubelet to work properly
 $ sudo swapoff -a
 ```
 
-Install nano
+Install nano (if not installed yet)
 
 ```sh
 $ sudo apt install nano
 ```
 
 Comment the swap part in /etc/fstab with
+
 ```sh
 $ sudo nano /etc/fstab
 ```
 
 Install Docker
+
 ```sh
 $ sudo apt install docker.io -y
+```
+
+Install curl (if not installed yet)
+
+```sh
+$ sudo apt install apt-transport-https curl -y
+```
+
+Add repositories
+
+```sh
+$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+$ sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+```
+
+☸️ Install Kubeadm, Kubelet, Kubectl and Kubernetes
+
+```sh
+$ sudo apt install kubeadm kubelet kubetcl kubernetes-cni -y
 ```
