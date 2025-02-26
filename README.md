@@ -1,6 +1,6 @@
-☸️ A simple training to run a K8s custer
+# ☸️ A simple training to run a K8s custer
 
-## 📋Prerequisites (for Linux Ubuntu 24.04 system)
+## 📋 Prerequisites (for Linux Ubuntu 24.04 system)
 
 - deactivate the 'Secure Boot' option for your machine in the BIOS
 
@@ -28,7 +28,7 @@ $ sudo apt update && sudo apt install vagrant
 $ vagrant --version
 ```
 
-## 🖥Power the machines on
+## 🖥 Power the machines on
 
 in each folder (./master, ./worker-1, ./worker-2), run the following command
 
