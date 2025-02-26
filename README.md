@@ -28,18 +28,40 @@ $ sudo apt update && sudo apt install vagrant
 $ vagrant --version
 ```
 
-## 🖥 Power the machines on
+## ☸️ Deploy K8s
 
-in each folder (./master, ./worker-1, ./worker-2), run the following commands
+### In each folder (./master, ./worker-1, ./worker-2), run the following commands :
+
+🖥 Power the machines on
 
 ```sh
 $ vagrant up
 ```
 
-## 🔐 Setup SSH
-
-in each folder (./master, ./worker-1, ./worker-2), run the following commands
+🔐 Setup SSH
 
 ```sh
 $ vagrant ssh
+```
+
+Turn the swap off to allow the kubelet to work properly
+
+```sh
+$ sudo swapoff -a
+```
+
+Install nano
+
+```sh
+$ sudo apt install nano
+```
+
+Comment the swap part in /etc/fstab with
+```sh
+$ sudo nano /etc/fstab
+```
+
+Install Docker
+```sh
+$ sudo apt install docker.io -y
 ```
