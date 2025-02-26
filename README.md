@@ -1,4 +1,4 @@
-# ☸️ A simple training to run a K8s custer (based on [a YT vieo](https://www.youtube.com/watch?v=_WW16Sp8-Jw))
+# ☸️ A simple training to run a K8s cluster (based on [a YT video](https://www.youtube.com/watch?v=_WW16Sp8-Jw))
 
 ## 📋 Prerequisites (for Linux Ubuntu 24.04 system)
 
