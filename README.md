@@ -38,13 +38,26 @@ $ vagrant --version
 $ vagrant up
 ```
 
-🔐 Connect with SSH
+🔐 Setup SSH
 
 ```sh
 $ vagrant ssh
+$ sudo apt update
+$ sudo apt install ssh
+$ sudo ufw allow 22
+$ sudo su
+$ nano /etc/ssh/sshd_config
+```
+Add :
+Port 1234
+PermitRootLogin no
+AllowUsers jim
+```ssh
+$ AllowUsers jim@1.2.3.4
+$ sudo service ssh reload
 ```
 
-Turn the swap off to allow the kubelet to work properly
+Turn the [swap](https://en.wikipedia.org/wiki/Memory_paging#Linux) off to allow the kubelet to work properly
 
 ```sh
 $ sudo swapoff -a
@@ -85,4 +98,15 @@ $ sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 
 ```sh
 $ sudo apt install kubeadm kubelet kubetcl kubernetes-cni -y
+```
+
+OR
+
+```sh
+$ sudo snap install kubeadm --classic
+$ sudo snap install kubelet --classic
+$ sudo snap install kubectl --classic
+
+#$ sudo snap install kubeadm kubelet kubetcl kubernetes-cnl
+
 ```
