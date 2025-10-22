@@ -1,0 +1,4 @@
+*.log
+master/vagrant/
+worker-1/vagrant/
+worker-2/vagrant/
