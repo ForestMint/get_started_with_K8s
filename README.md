@@ -38,6 +38,12 @@ $ vagrant --version
 $ vagrant up
 ```
 
+(
+in case of error, yoiu might have to run the following on Arch Linux :
+sudo pacman -S virtualbox-host-modules-arch
+sudo modprobe vboxdrv
+)
+
 🔐 Setup SSH
 
 ```sh
