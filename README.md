@@ -1,118 +1,40 @@
-# ☸️ A simple training to run a K8s cluster (based on [a YT video](https://www.youtube.com/watch?v=_WW16Sp8-Jw))
 
-## 📋 Prerequisites (for Linux Ubuntu 24.04 system)
 
-- deactivate the 'Secure Boot' option for your machine in the BIOS
+#################### On master node, worker-1 and worker-2
+vagrant up
 
-- install VirtualBox
+check in VirtualBox machines's network settings that machine is attached to NAT
 
-```sh
-$ sudo apt-get install virtualbox
-```
+vagrant ssh
+    ssh -V
 
-- install vagrant
+    sudo systemctl enable ssh
+    sudo systemctl start ssh
 
-```sh
-$ wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-```
+    sudo systemctl status ssh
 
-```sh
-$ echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-```
+    sudo adduser alice # set alice's password to "bubblegum"
 
-```sh
-$ sudo apt update && sudo apt install vagrant
-```
+    sudo usermod -aG sudo alice # add alice to sudoers
 
-```sh
-$ vagrant --version
-```
+    sudo rm /etc/ssh/sshd_config
 
-## ☸️ Deploy K8s
+    sudo touch /etc/ssh/sshd_config
 
-### In each folder (./master, ./worker-1, ./worker-2), run the following commands :
+    sudo vim /etc/ssh/sshd_config
+    paste the content of the ssh_config_template file of the repository into /etc/ssh/sshd_config
 
-🖥 Power the machines on
+    uncomment 'AllowUsers alice' at line 21 to allow only alice to SSH into the machine, thus making vagrant ssh impossible
+    If you leave it commented it will keep all the users allowed to SSH into the machine but we want this right to end for vagrant now
 
-```sh
-$ vagrant up
-```
+    sudo cat /etc/ssh/sshd_config | grep AllowUsers
+    check AllowUsers
 
-(
-in case of error, yoiu might have to run the following on Arch Linux :
-sudo pacman -S virtualbox-host-modules-arch
-sudo modprobe vboxdrv
-)
+    ip a # to get the IP that will be available in the inet section of the output
 
-🔐 Setup SSH
+    sudo reboot # seems to be needed to make changes in /etc/ssh/sshd_config acknowledged by the SSH daemon
 
-```sh
-$ vagrant ssh
-$ sudo apt update
-$ sudo apt install ssh
-$ sudo ufw allow 22
-$ sudo su
-$ nano /etc/ssh/sshd_config
-```
-Add :
-Port 1234
-PermitRootLogin no
-AllowUsers jim
-```ssh
-$ AllowUsers jim@1.2.3.4
-$ sudo service ssh reload
-```
+from another terminal from your host machine
+    ssh alice@<ip-node> # the password will be asked, it is "bubblegum"
 
-Turn the [swap](https://en.wikipedia.org/wiki/Memory_paging#Linux) off to allow the kubelet to work properly
 
-```sh
-$ sudo swapoff -a
-```
-
-Install nano (if not installed yet)
-
-```sh
-$ sudo apt install nano
-```
-
-Comment the swap part in /etc/fstab with
-
-```sh
-$ sudo nano /etc/fstab
-```
-
-Install Docker
-
-```sh
-$ sudo apt install docker.io -y
-```
-
-Install curl (if not installed yet)
-
-```sh
-$ sudo apt install apt-transport-https curl -y
-```
-
-Add repositories
-
-```sh
-$ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
-$ sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
-```
-
-☸️ Install Kubeadm, Kubelet, Kubectl and Kubernetes
-
-```sh
-$ sudo apt install kubeadm kubelet kubetcl kubernetes-cni -y
-```
-
-OR
-
-```sh
-$ sudo snap install kubeadm --classic
-$ sudo snap install kubelet --classic
-$ sudo snap install kubectl --classic
-
-#$ sudo snap install kubeadm kubelet kubetcl kubernetes-cnl
-
-```
