@@ -84,3 +84,9 @@ sudo /home/vagrant/install_K8s_suite.sh
 ```
 
 If all goes well, you’ll see version info for each of kubeadm, kubectl and kubelet.
+
+## Start with K8s
+
+```bash
+sudo kubeadm init
+```
