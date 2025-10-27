@@ -14,7 +14,7 @@ check in VirtualBox machines's network settings that machine is attached to NAT
 vagrant ssh
 ```
 
-Inside the machine, run the following steps
+Inside the machine, run the script managing the first steps
 
 ```bash
 /home/vagrant/first_steps.sh
