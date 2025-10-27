@@ -1,68 +1,74 @@
+# ☸️ A simple training to run a K8s cluster (based on [a YT video](https://www.youtube.com/watch?v=_WW16Sp8-Jw))
 
+## Create VMs and set SSH
 
-#####################################################################
-#####################   CREATE VMS AND SET SSH             ##########
-#####################################################################
+### On master node, worker-1 and worker-2
 
-############# On master node, worker-1 and worker-2
+```bash
 vagrant up
+```
 
 check in VirtualBox machines's network settings that machine is attached to NAT
 
+```bash
 vagrant ssh
-    ssh -V
+```
 
-    sudo systemctl enable ssh
-    sudo systemctl start ssh
+Inside the machine, run the following steps
 
-    sudo systemctl status ssh
+```bash
+ssh -V
 
-    sudo adduser alice # set alice's password to "bubblegum"
+sudo systemctl enable ssh
+sudo systemctl start ssh
 
-    sudo usermod -aG sudo alice # add alice to sudoers
+sudo systemctl status ssh
 
-    sudo rm /etc/ssh/sshd_config
+sudo adduser alice # set alice's password to "bubblegum"
 
-    sudo touch /etc/ssh/sshd_config
+sudo usermod -aG sudo alice # add alice to sudoers
 
-    sudo vim /etc/ssh/sshd_config
-    paste the content of the ssh_config_template file of the repository into /etc/ssh/sshd_config
+sudo rm /etc/ssh/sshd_config
 
-    uncomment 'AllowUsers alice' at line 21 to allow only alice to SSH into the machine, thus making vagrant ssh impossible
-    If you leave it commented it will keep all the users allowed to SSH into the machine but we want this right to end for vagrant now
+sudo touch /etc/ssh/sshd_config
 
-    sudo cat /etc/ssh/sshd_config | grep AllowUsers
-    check AllowUsers
+sudo vim /etc/ssh/sshd_config
+#paste the content of the ssh_config_template file of the repository into /etc/ssh/sshd_config
 
-    ip a # to get the IP that will be available in the inet section of the output
+#uncomment 'AllowUsers alice' at line 21 to allow only alice to SSH into the machine, thus making vagrant ssh impossible
+#If you leave it commented it will keep all the users allowed to SSH into the machine but we want this right to end for vagrant now
 
-    sudo reboot # seems to be needed to make changes in /etc/ssh/sshd_config acknowledged by the SSH daemon
+sudo cat /etc/ssh/sshd_config | grep AllowUsers
+check AllowUsers
+#it must display 'AllowUsers alice'
 
-#####################################################################
-#####################   CONNECT WITH SSH                   ##########
-#####################################################################
+ip a # to get the IP that will be available in the inet section of the output
+
+sudo reboot # needed to make changes in /etc/ssh/sshd_config acknowledged by the SSH daemon
+```
+
+## Connect with SSH
 
 from another terminal from your host machine
-    ssh alice@<ip-node> # the password will be asked, it is "bubblegum"
 
-#####################################################################
-#####################   SNAPSHOTS                          ##########
-#####################################################################
+```bash
+ssh alice@<node-ip> # the password will be asked, it is "bubblegum"
+```
+
+## Take snapshots
 
 Create a snapshot for all of the 3 VMs at this point of the process.
 
-#####################################################################
-#####################   PREP FOR K8S                       ##########
-#####################################################################
+## Prep for K8s
 
-# turn off the swap to allow kubelet to work properly
+### turn off the swap to allow kubelet to work properly
 
 ```bash
 sudo swapoff -a
 sudo nano /etc/fstab # comment the swap line
 ```
 
-# install Docker 
+### install Docker 
 
 ```bash
 sudo apt update
@@ -71,54 +77,54 @@ docker --version
 systemctl status docker
 ```
 
-# setup curl
+### setup curl
 
 ```bash
 sudo apt update
 sudo apt install -y apt-transport-https ca-certificates curl gpg
 ```
 
-# Install K8s suite
+### Install K8s suite
 
-## Update and install dependencies
+#### Update and install dependencies
 
 ```bash
 sudo apt update
 sudo apt install -y apt-transport-https ca-certificates curl gpg
 ```
 
-## Add the Kubernetes GPG key
+#### Add the Kubernetes GPG key
 
 ```bash
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 ```
 
-## Add the Kubernetes APT repository
+#### Add the Kubernetes APT repository
 
 ```bash
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
-# Update package lists
+#### Update package lists
 
 ```bash
 sudo apt update
 ```
 
-# Install kubeadm (and optionally kubectl and kubelet)
+#### Install kubeadm (and optionally kubectl and kubelet)
 
 ```bash
 sudo apt install -y kubeadm kubelet kubectl
 ```
 
-# Prevent automatic updates (optional but recommended)
+#### Prevent automatic updates (optional but recommended)
 
 ```bash
 sudo apt-mark hold kubeadm kubelet kubectl
 ```
 
-# Verify installation
+#### Verify installation
 
 ```bash
 kubeadm version
