@@ -19,7 +19,7 @@ AddressFamily any
 PubkeyAuthentication yes
 
 # Allow all system users (or specify users explicitly)
-# AllowUsers alice
+AllowUsers alice
 
 # Logging
 LogLevel INFO
