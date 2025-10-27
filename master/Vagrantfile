@@ -27,6 +27,12 @@ sudo usermod -aG sudo alice # add alice to sudoers
 
 sudo rm /etc/ssh/sshd_config
 
+sudo bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf' # temporarily use Google's DNS
+
+sudo curl -L "https://raw.githubusercontent.com/ForestMint/get_started_with_K8s/refs/heads/feat/run_with_arch_linux/ssh_congig_template" -o /etc/ssh/sshd_config
+
+sudo reboot
+
 EOF
 
   chmod +x /home/vagrant/first_steps.sh

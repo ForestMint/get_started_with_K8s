@@ -17,24 +17,7 @@ vagrant ssh
 Inside the machine, run the following steps
 
 ```bash
-
 /home/vagrant/first_steps.sh
-
-sudo touch /etc/ssh/sshd_config
-
-sudo vim /etc/ssh/sshd_config
-#paste the content of the ssh_config_template file of the repository into /etc/ssh/sshd_config
-
-# leave 'AllowUsers alice' uncommented at line 21 to allow only alice to SSH into the machine, thus making vagrant ssh impossible
-# If you comment it will keep all the users allowed to SSH into the machine but we want this right to be ended for vagrant now
-
-sudo cat /etc/ssh/sshd_config | grep AllowUsers
-#check AllowUsers
-#it must display 'AllowUsers alice'
-
-ip a # to get the IP that will be available in the inet section of the output
-
-sudo reboot # needed to make changes in /etc/ssh/sshd_config acknowledged by the SSH daemon
 ```
 
 ## Connect with SSH
