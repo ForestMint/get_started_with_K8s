@@ -1,6 +1,10 @@
 
 
-#################### On master node, worker-1 and worker-2
+#####################################################################
+#####################   CREATE VMS AND SET SSH             ##########
+#####################################################################
+
+############# On master node, worker-1 and worker-2
 vagrant up
 
 check in VirtualBox machines's network settings that machine is attached to NAT
@@ -34,7 +38,92 @@ vagrant ssh
 
     sudo reboot # seems to be needed to make changes in /etc/ssh/sshd_config acknowledged by the SSH daemon
 
+#####################################################################
+#####################   CONNECT WITH SSH                   ##########
+#####################################################################
+
 from another terminal from your host machine
     ssh alice@<ip-node> # the password will be asked, it is "bubblegum"
 
+#####################################################################
+#####################   SNAPSHOTS                          ##########
+#####################################################################
 
+Create a snapshot for all of the 3 VMs at this point of the process.
+
+#####################################################################
+#####################   PREP FOR K8S                       ##########
+#####################################################################
+
+# turn off the swap to allow kubelet to work properly
+
+```bash
+sudo swapoff -a
+sudo nano /etc/fstab # comment the swap line
+```
+
+# install Docker 
+
+```bash
+sudo apt update
+sudo apt install docker.io -y
+docker --version
+systemctl status docker
+```
+
+# setup curl
+
+```bash
+sudo apt update
+sudo apt install -y apt-transport-https ca-certificates curl gpg
+```
+
+# Install K8s suite
+
+## Update and install dependencies
+
+```bash
+sudo apt update
+sudo apt install -y apt-transport-https ca-certificates curl gpg
+```
+
+## Add the Kubernetes GPG key
+
+```bash
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+```
+
+## Add the Kubernetes APT repository
+
+```bash
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+```
+
+# Update package lists
+
+```bash
+sudo apt update
+```
+
+# Install kubeadm (and optionally kubectl and kubelet)
+
+```bash
+sudo apt install -y kubeadm kubelet kubectl
+```
+
+# Prevent automatic updates (optional but recommended)
+
+```bash
+sudo apt-mark hold kubeadm kubelet kubectl
+```
+
+# Verify installation
+
+```bash
+kubeadm version
+kubectl version --client
+kubelet --version
+```
+
+If all goes well, you’ll see version info for each.
