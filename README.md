@@ -61,6 +61,28 @@ Create a snapshot for all of the 3 VMs at this point of the process.
 
 ## Prep for K8s
 
+### check that amount of RAM and CPUs are enough for a K8s cluster (at least 1700 MB RAM and 2 CPUs)
+
+Check the RAM with this command
+
+```bash
+cat /proc/meminfo | grep MemTotal:
+```
+
+Check the CPU(s) with one the following 3
+
+```bash
+nproc
+```
+
+```bash
+lscpu | grep "CPU(s):"
+```
+
+```bash
+cat /proc/cpuinfo | grep "cpu cores"
+```
+
 ### turn off the swap to allow kubelet to work properly
 
 ```bash
