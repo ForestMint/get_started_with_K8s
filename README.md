@@ -1,8 +1,6 @@
 # ☸️ A simple training to run a K8s cluster (based on [a YT video](https://www.youtube.com/watch?v=_WW16Sp8-Jw))
 
-## Create VMs and set SSH
-
-### On master node, worker-1 and worker-2
+## Create VMs and set SSH (for master node, worker-1 and worker-2)
 
 ```bash
 vagrant up
@@ -20,7 +18,7 @@ Inside the machine, run the script managing the first steps
 /home/vagrant/first_steps.sh
 ```
 
-## Connect with SSH
+## Connect with SSH (for master node, worker-1 and worker-2)
 
 from another terminal from your host machine
 
@@ -28,11 +26,11 @@ from another terminal from your host machine
 ssh alice@<node-ip> # the password will be asked, it is "bubblegum"
 ```
 
-## Take snapshots
+## Take snapshots (for master node, worker-1 and worker-2)
 
 Create a snapshot for all of the 3 VMs at this point of the process.
 
-## Prep for K8s
+## Prep for K8s (for master node, worker-1 and worker-2)
 
 ### check that amount of RAM and CPUs are enough for a K8s cluster (at least 1700 MB RAM and 2 CPUs)
 
@@ -86,6 +84,8 @@ sudo /home/vagrant/install_K8s_suite.sh
 If all goes well, you’ll see version info for each of kubeadm, kubectl and kubelet.
 
 ## Start with K8s
+
+### For master node only
 
 ```bash
 sudo kubeadm init
