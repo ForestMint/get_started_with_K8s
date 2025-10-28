@@ -88,5 +88,43 @@ If all goes well, you’ll see version info for each of kubeadm, kubectl and kub
 ### For master node only
 
 ```bash
+apt list --installed | grep kubernetes-cni
 sudo kubeadm init
+```
+
+This will write something like below at the end of the output
+
+```bash
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join <my-ip-address>:<my-port> --token <my-token> \
+	--discovery-token-ca-cert-hash sha256:<my-sha-256>
+
+```
+
+(6443 being the default port for Kubernetes API)
+
+By running this command as root in every worker node, you will make them join the cluster.
+
+### For every worker node only
+
+```bash
+sudo su -
+```
+
+Then in root console :
+
+```bash
+kubeadm join <my-ip-address>:<my-port> --token <my-token> \
+	--discovery-token-ca-cert-hash sha256:<my-sha-256>
+```
+
+If it gets stuck at pre-fligh checks :
+
+```bash
+ping <my-ip-address>
+
+sudo apt install nmap
+
+nmap -p <my-port> <my-ip-address>
 ```
