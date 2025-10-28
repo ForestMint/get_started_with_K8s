@@ -42,6 +42,16 @@ Verify installation
 kubectl version --client
 ```
 
+```bash
+cd
+mkdir .kube
+cd .kube
+touch config
+sudo vim ~/.kube/config # copy content of this repo's kubeconfig file
+sudo cat ~/.kube/config
+kubectl config get-contexts
+```
+
 ## Prep for K8s (for kmaster node, kworker-1 and kworker-2)
 
 ### check that amount of RAM and CPUs are enough for a K8s cluster (at least 1700 MB RAM and 2 CPUs)
