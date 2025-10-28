@@ -1,6 +1,6 @@
 # ☸️ A simple training to run a K8s cluster (based on [a YT video](https://www.youtube.com/watch?v=_WW16Sp8-Jw))
 
-## Create VMs and set SSH (for master node, worker-1 and worker-2)
+## Create VMs and set SSH (for kadmin, kmaster (control plane), kworker-1 and kworker-2)
 
 ```bash
 vagrant up
@@ -18,7 +18,7 @@ Inside the machine, run the script managing the first steps
 /home/vagrant/first_steps.sh
 ```
 
-## Connect with SSH (for master node, worker-1 and worker-2)
+## Connect with SSH (for kadmin, kmaster node, kworker-1 and kworker-2)
 
 from another terminal from your host machine
 
@@ -26,11 +26,50 @@ from another terminal from your host machine
 ssh alice@<node-ip> # the password will be asked, it is "bubblegum"
 ```
 
-## Take snapshots (for master node, worker-1 and worker-2)
+## Take snapshots (for kmaster node, kworker-1 and kworker-2)
 
 Create a snapshot for all of the 3 VMs at this point of the process.
 
-## Prep for K8s (for master node, worker-1 and worker-2)
+## Prep for admininstration (for kadmin)
+
+```bash
+sudo /home/vagrant/install_kubectl.sh
+```
+
+Verify installation
+
+```bash
+kubectl version --client
+```
+
+
+Install kind
+```bash
+# Download the latest release (Linux AMD64 example)
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
+
+# Make it executable
+chmod +x ./kind
+
+# Move it to a location in your PATH
+sudo mv ./kind /usr/local/bin/kind
+
+#check version of kind
+kind version
+```
+
+Install docker
+```bash
+sudo /home/vagrant/install_docker.sh
+```
+
+Create kind cluster
+```bash
+sudo kind create cluster
+```
+
+
+## Prep for K8s (for kmaster node, kworker-1 and kworker-2)
 
 ### check that amount of RAM and CPUs are enough for a K8s cluster (at least 1700 MB RAM and 2 CPUs)
 

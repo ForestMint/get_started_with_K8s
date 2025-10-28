@@ -46,11 +46,31 @@ SHELL
 
 
 
+  config.vm.provision "shell", inline: <<-SHELL
+  cat <<EOF > /home/vagrant/install_docker.sh
+#!/bin/bash
+
+sudo bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf' # temporarily use Google's DNS
+
+sudo apt update
+sudo apt install docker.io -y
+docker --version
+systemctl status docker
+
+EOF
+
+  chmod +x /home/vagrant/install_docker.sh
+SHELL
+
+
+
+
+
 
 
 
   config.vm.provision "shell", inline: <<-SHELL
-  cat <<EOF > /home/vagrant/install_kubectl_suite.sh
+  cat <<EOF > /home/vagrant/install_kubectl.sh
 #!/bin/bash
 
 sudo bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf' # temporarily use Google's DNS
@@ -73,20 +93,24 @@ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 
 sudo apt update
 
+# Install kubectl
+
+sudo apt install -y kubectl
+
 # Prevent automatic updates (optional but recommended)
 
 sudo apt-mark hold kubectl
 
-# Verify installation
-
-kubectl version --client
-
-
 EOF
 
-  chmod +x /home/vagrant/install_kubectl_suite.sh
+  chmod +x /home/vagrant/install_kubectl.sh
 SHELL
 
-end
+
+
+
+
+
+
 
 
