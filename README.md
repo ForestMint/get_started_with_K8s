@@ -42,33 +42,6 @@ Verify installation
 kubectl version --client
 ```
 
-
-Install kind
-```bash
-# Download the latest release (Linux AMD64 example)
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
-
-# Make it executable
-chmod +x ./kind
-
-# Move it to a location in your PATH
-sudo mv ./kind /usr/local/bin/kind
-
-#check version of kind
-kind version
-```
-
-Install docker
-```bash
-sudo /home/vagrant/install_docker.sh
-```
-
-Create kind cluster
-```bash
-sudo kind create cluster
-```
-
-
 ## Prep for K8s (for kmaster node, kworker-1 and kworker-2)
 
 ### check that amount of RAM and CPUs are enough for a K8s cluster (at least 1700 MB RAM and 2 CPUs)

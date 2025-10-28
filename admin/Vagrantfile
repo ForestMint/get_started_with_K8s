@@ -46,26 +46,6 @@ SHELL
 
 
 
-  config.vm.provision "shell", inline: <<-SHELL
-  cat <<EOF > /home/vagrant/install_docker.sh
-#!/bin/bash
-
-sudo bash -c 'echo "nameserver 8.8.8.8" > /etc/resolv.conf' # temporarily use Google's DNS
-
-sudo apt update
-sudo apt install docker.io -y
-docker --version
-systemctl status docker
-
-EOF
-
-  chmod +x /home/vagrant/install_docker.sh
-SHELL
-
-
-
-
-
 
 
 
