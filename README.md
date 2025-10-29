@@ -50,6 +50,8 @@ touch config
 sudo vim ~/.kube/config # copy content of this repo's kubeconfig file
 sudo cat ~/.kube/config
 kubectl config view
+kubectl config get-contexts # shows that there is no active context (blank in col 1, row 1)
+kubectl config use-context sandbox-context #activates the context
 kubectl config get-contexts
 ```
 
