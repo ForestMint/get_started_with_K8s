@@ -127,6 +127,27 @@ Display in console the client key that will allow kubectl to monitor the brand n
 cat client.key
 ```
 
+Install kubectl on control plane for debug purpose
+```bash
+sudo apt install -y kubectl # install kubectl
+kubectl version --client # check installation
+```
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+```bash
+kubectl config get-contexts
+```
+
+Now that we no longer need kubectl on control plane, let's remove it for security reasons
+```bash
+sudo apt-get remove -y kubectl
+```
+
 ### Start with kubectl (for kadmin only)
 
 ```bash
