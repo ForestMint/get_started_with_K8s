@@ -111,6 +111,22 @@ Display in console the certificate that will allow kubectl to monitor the brand 
 cat /etc/kubernetes/pki/ca.crt
 ```
 
+Extract the certificate and key from /etc/kubernetes/admin.conf
+```bash
+sudo grep 'client-certificate-data' /etc/kubernetes/admin.conf | awk '{print $2}' | base64 -d > client.crt
+sudo grep 'client-key-data' /etc/kubernetes/admin.conf | awk '{print $2}' | base64 -d > client.key
+```
+
+Display in console the client certificate that will allow kubectl to monitor the brand new cluster
+```bash
+cat client.crt
+```
+
+Display in console the client key that will allow kubectl to monitor the brand new cluster
+```bash
+cat client.key
+```
+
 ### Start with kubectl (for kadmin only)
 
 ```bash
@@ -135,11 +151,21 @@ sudo touch ~/.kube/ca.crt
 sudo vim ~/.kube/ca.crt # paste content of certificate displayed in the control plane (/etc/kubernetes/pki/ca.crt)
 sudo cat ~/.kube/ca.crt
 
+sudo touch ~/.kube/client.crt
+sudo vim ~/.kube/client.crt # paste content of certificate displayed in the control plane (client.crt)
+sudo cat ~/.kube/client.crt
+
+sudo touch ~/.kube/client.key
+sudo vim ~/.kube/client.key # paste content of key displayed in the control plane (client.key)
+sudo cat ~/.kube/client.key
+
 kubectl config view --raw
 kubectl config view
 kubectl config get-contexts # shows that there is no active context (blank in col 1, row 1)
 kubectl config use-context sandbox-context #activates the context
 kubectl config get-contexts
+
+kubectl cluster-info
 ```
 
 ### For every worker node only
