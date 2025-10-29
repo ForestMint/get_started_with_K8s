@@ -30,31 +30,6 @@ ssh alice@<node-ip> # the password will be asked, it is "bubblegum"
 
 Create a snapshot for all of the 3 VMs at this point of the process.
 
-## Prep for admininstration (for kadmin)
-
-```bash
-sudo /home/vagrant/install_kubectl.sh
-```
-
-Verify installation
-
-```bash
-kubectl version --client
-```
-
-```bash
-cd
-mkdir .kube
-cd .kube
-touch config
-sudo vim ~/.kube/config # copy content of this repo's kubeconfig file
-sudo cat ~/.kube/config
-kubectl config view
-kubectl config get-contexts # shows that there is no active context (blank in col 1, row 1)
-kubectl config use-context sandbox-context #activates the context
-kubectl config get-contexts
-```
-
 ## Prep for K8s (for kmaster node, kworker-1 and kworker-2)
 
 ### check that amount of RAM and CPUs are enough for a K8s cluster (at least 1700 MB RAM and 2 CPUs)
@@ -130,6 +105,42 @@ kubeadm join <my-ip-address>:<my-port> --token <my-token> \
 (6443 being the default port for Kubernetes API)
 
 By running this command as root in every worker node, you will make them join the cluster.
+
+Display in console the certificate that will allow kubectl to monitor the brand new cluster
+```bash
+cat /etc/kubernetes/pki/ca.crt
+```
+
+### Start with kubectl (for kadmin only)
+
+```bash
+sudo /home/vagrant/install_kubectl.sh
+```
+
+Verify installation
+
+```bash
+kubectl version --client
+```
+
+```bash
+cd
+mkdir .kube
+cd .kube
+touch config
+sudo vim ~/.kube/config # paste content of this repo's kubeconfig file
+sudo cat ~/.kube/config
+
+sudo touch ~/.kube/ca.crt
+sudo vim ~/.kube/ca.crt # paste content of certificate displayed in the control plane (/etc/kubernetes/pki/ca.crt)
+sudo cat ~/.kube/ca.crt
+
+kubectl config view --raw
+kubectl config view
+kubectl config get-contexts # shows that there is no active context (blank in col 1, row 1)
+kubectl config use-context sandbox-context #activates the context
+kubectl config get-contexts
+```
 
 ### For every worker node only
 
