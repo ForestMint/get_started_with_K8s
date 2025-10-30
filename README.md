@@ -59,6 +59,8 @@ cat /proc/cpuinfo | grep "cpu cores"
 ```bash
 sudo swapoff -a
 sudo vim /etc/fstab # comment the swap line if it appears
+swapon --show # check that swap is off
+grep swap /etc/fstab
 ```
 
 ### install Docker 
@@ -92,8 +94,25 @@ kubelet --version
 dpkg -l | grep kubernetes-cni
 ```
 
+Install and enable containerd
 ```bash
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+sudo apt update
+sudo apt install -y containerd
+sudo systemctl enable --now containerd
+```
+
+Check status of containerd and location of containerd.sock file
+```bash
+sudo systemctl status containerd
+```
+
+```bash
+sudo sysctl -w net.ipv4.ip_forward=1
+cat /proc/sys/net/ipv4/ip_forward
+```
+
+```bash
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket /run/containerd/containerd.sock
 ```
 
 This will write something like below at the end of the output
