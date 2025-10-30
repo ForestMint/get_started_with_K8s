@@ -76,7 +76,6 @@ sudo apt install -y apt-transport-https ca-certificates curl gpg
 
 ### Install K8s suite
 
-
 ```bash
 sudo /home/vagrant/install_K8s_suite.sh
 ```
@@ -88,8 +87,13 @@ If all goes well, you’ll see version info for each of kubeadm, kubectl and kub
 ### For master node only
 
 ```bash
-apt list --installed | grep kubernetes-cni
-sudo kubeadm init
+kubeadm version
+kubelet --version
+dpkg -l | grep kubernetes-cni
+```
+
+```bash
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16
 ```
 
 This will write something like below at the end of the output
@@ -104,7 +108,19 @@ kubeadm join <my-ip-address>:<my-port> --token <my-token> \
 
 (6443 being the default port for Kubernetes API)
 
-By running this command as root in every worker node, you will make them join the cluster.
+By running this "kubeadm join" command as root in every worker node, you will make them join the cluster.
+
+Set up your kubectl config
+```bash
+mkdir -p $HOME/.kube
+sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+List the running containers from a container runtime that implement the CRI (Container Runtime Interface)
+```bash
+sudo crictl ps
+```
 
 Display in console the certificate that will allow kubectl to monitor the brand new cluster
 ```bash
@@ -131,12 +147,6 @@ Install kubectl on control plane for debug purpose
 ```bash
 sudo apt install -y kubectl # install kubectl
 kubectl version --client # check installation
-```
-
-```bash
-mkdir -p $HOME/.kube
-sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
 ```bash
