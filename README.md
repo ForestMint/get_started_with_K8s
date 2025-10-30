@@ -165,6 +165,39 @@ The kubelet agent on the node continuously watches this repository and as soos a
 
 
 
+
+
+If all the 4 pods are running without crashing, go to next step.
+Else, run
+
+```bash
+sudo journalctl -u kubelet -f
+```
+
+and inspect the manifest of the naughty pod with 
+```bash
+sudo cat /etc/kubernetes/manifests/<naughty-pod>.yaml
+```
+possibly looking for misconfigurations (e.g., wrong volume mounts, bad image, bad args), file paths that don’t exist on the node or environment variables that are missing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Display in console the certificate that will allow kubectl to monitor the brand new cluster
 ```bash
 cat /etc/kubernetes/pki/ca.crt
