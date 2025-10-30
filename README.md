@@ -123,6 +123,16 @@ kubeadm join <my-ip-address>:<my-port> --token <my-token> \
 
 By running this "kubeadm join" command as root in every worker node, you will make them join the cluster.
 
+Destroy the cluster
+```bash
+yes Y | sudo kubeadm reset # it reverts the 'sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket unix:///run/containerd/containerd.sock' that we have run previously
+```
+
+Initialize it again
+```bash
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket unix:///run/containerd/containerd.sock
+```
+
 Set up your kubectl config
 ```bash
 mkdir -p $HOME/.kube
