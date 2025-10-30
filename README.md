@@ -161,7 +161,8 @@ kube-scheduler   			assigns pods to nodes
 
 Without any one of these, the control plane is considered non-functional.
 
-
+When we run "kubeadm init", the components will be started as static pods.Those pods manifest YAML files are placed in /etc/kubernetes/manifests.
+The kubelet agent on the node continuously watches this repository and as soos as it detects that a node is not running, it will try to recreate it automatically.
 
 
 
