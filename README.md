@@ -112,7 +112,7 @@ cat /proc/sys/net/ipv4/ip_forward
 ```
 
 ```bash
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket /run/containerd/containerd.sock
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket /run/containerd/containerd.sock # the --cri-socket option will specity which CRI (Docker Engine, containerd, ...) will be in charge of running the pods required for the control plane to run properly (kube-scheduler-kmaster, ...)
 ```
 
 This will write something like below at the end of the output
@@ -140,6 +140,35 @@ List the running containers from a container runtime that implement the CRI (Con
 ```bash
 sudo crictl ps
 ```
+
+List the current containerd containers
+```bash
+sudo crictl --runtime-endpoint /run/containerd/containerd.sock ps # depreciated
+sudo crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps # not depreciated
+```
+
+Show pods that crashed in the past as well as those which are still running
+```bash
+sudo crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps -a
+```
+
+At the minimum, there are 4 essential control plane components (that run as pods in most setups like kubeadm used here) that must be running for the cluster to function properly :
+
+kube-apiserver 				handles all API requests
+etcd   						stores the cluster state
+kube-controller-manager  	ensures desired state is maintained
+kube-scheduler   			assigns pods to nodes
+
+Without any one of these, the control plane is considered non-functional.
+
+
+
+
+
+
+
+
+
 
 Display in console the certificate that will allow kubectl to monitor the brand new cluster
 ```bash
