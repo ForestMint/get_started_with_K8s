@@ -63,12 +63,6 @@ swapon --show # check that swap is off
 grep swap /etc/fstab
 ```
 
-### install Docker 
-
-```bash
-sudo /home/vagrant/install_docker.sh
-```
-
 ### setup curl
 
 ```bash
@@ -112,7 +106,7 @@ cat /proc/sys/net/ipv4/ip_forward
 ```
 
 ```bash
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket /run/containerd/containerd.sock # the --cri-socket option will specity which CRI (Docker Engine, containerd, ...) will be in charge of running the pods required for the control plane to run properly (kube-scheduler-kmaster, ...)
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16 --cri-socket unix:///run/containerd/containerd.sock # the --cri-socket option will specity which CRI (Docker Engine, containerd, ...) will be in charge of running the pods required for the control plane to run properly (kube-scheduler-kmaster, ...)
 ```
 
 This will write something like below at the end of the output
@@ -161,7 +155,7 @@ kube-scheduler   			assigns pods to nodes
 
 Without any one of these, the control plane is considered non-functional.
 
-When we run "kubeadm init", the components will be started as static pods.Those pods manifest YAML files are placed in /etc/kubernetes/manifests.
+When we run "kubeadm init", the components will be started as static pods. Those pods manifest YAML files are placed in the folder /etc/kubernetes/manifests.
 The kubelet agent on the node continuously watches this repository and as soos as it detects that a node is not running, it will try to recreate it automatically.
 
 
