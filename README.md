@@ -283,7 +283,7 @@ curl -k https://<kubernetes-apiserver-ip-address>:<kubernetes-apiserver-port>/li
 
 
 
-Display in console the certificate that will allow kubectl to monitor the brand new cluster
+Display in console the certificate that will allow kubectl on admin machine to monitor the brand new cluster
 ```bash
 cat /etc/kubernetes/pki/ca.crt
 ```
