@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kube-scheduler
+  namespace: kube-system
+spec:
+  hostNetwork: true
+  containers:
+  - name: kube-scheduler
+    image: registry.k8s.io/kube-scheduler:v1.31.0
+    command:
+    - kube-scheduler
+    - --kubeconfig=/etc/kubernetes/scheduler.conf
+  volumeMounts:
+  - name: k8s-config
+    mountPath: /etc/kubernetes
+  volumes:
+  - name: k8s-config
+    hostPath:
+      path: /etc/kubernetes
