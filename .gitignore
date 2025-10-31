@@ -1,4 +1,8 @@
 *.log
+admin/.vagrant/
 master/.vagrant/
 worker-1/.vagrant/
 worker-2/.vagrant/
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
