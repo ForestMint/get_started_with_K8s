@@ -3,17 +3,22 @@
 ## Create VMs and set SSH (for kadmin, kmaster (control plane), kworker-1 and kworker-2)
 
 ```bash
-vagrant up
+terraform init
+terraform apply
 ```
+
+## Create VMs and set SSH (for kadmin, kmaster (control plane), kworker-1 and kworker-2)
 
 check in VirtualBox machines's network settings that machine is attached to NAT
 
+go the folder where the Vagrantfile is
+
+SSH into the VM as vagrant user
 ```bash
 vagrant ssh
 ```
 
 Inside the machine, run the script managing the first steps
-
 ```bash
 /home/vagrant/first_steps.sh
 ```
