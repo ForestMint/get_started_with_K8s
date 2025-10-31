@@ -4,7 +4,7 @@
 
 ```bash
 terraform init
-terraform apply
+yes yes | terraform apply
 ```
 
 ## Create VMs and set SSH (for kadmin, kmaster (control plane), kworker-1 and kworker-2)
@@ -93,6 +93,12 @@ kubelet --version
 dpkg -l | grep kubernetes-cni
 ```
 
+Install kubectl on control plane for debug purpose
+```bash
+sudo apt install -y kubectl # install kubectl
+kubectl version --client # check installation
+```
+
 Install and enable containerd
 ```bash
 sudo apt update
@@ -145,6 +151,35 @@ sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
+Check the cluster status
+```bash
+kubectl get nodes
+kubectl get pods -n kube-system
+```
+
+Apply the Flannel CNI plugin
+(this command must be ran quickly after the "kubeadm init" since without any CNI the pods would crash and if kube-apiserver crashes without CNI, the kubelet would restart it on the wrong IP thus putting the kubelet down too which would thus make impossible to apply a CNI and we would be forced to reset the cluster)
+```bash
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+```
+
+```bash
+kubectl get pods -n kube-system
+kubectl get nodes
+```
+
+Check in the kubelet configuration where the kubelet checks the manifests, how often it does and set this frequency to 2s
+```bash
+sudo cat /var/lib/kubelet/config.yaml | grep staticPodPath
+sudo cat /var/lib/kubelet/config.yaml | grep fileCheckFrequency
+
+sudo sed -i 's/^\(\s*fileCheckFrequency:\s*\).*/\12s/' /var/lib/kubelet/config.yaml # set fileCheckFrequency to 4s
+
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+sudo systemctl status kubelet # verify you have a "Active: active (running) since [...]" line that displays the elapsed tince since you've run "sudo systemctl restart kubelet"
+```
+
 List the running containers from a container runtime that implement the CRI (Container Runtime Interface)
 ```bash
 sudo crictl ps
@@ -188,12 +223,47 @@ Else, run
 ```bash
 sudo journalctl -u kubelet -f
 ```
+You might see some CrashLoopBackOff in the logs
 
 and inspect the manifest of the naughty pod with 
 ```bash
 sudo cat /etc/kubernetes/manifests/<naughty-pod>.yaml
 ```
 possibly looking for misconfigurations (e.g., wrong volume mounts, bad image, bad args), file paths that don’t exist on the node or environment variables that are missing
+
+
+
+Make sure the right of the manifests (files and folder) are good for the kubelet (that runs as root)
+```bash
+sudo chown root:root /etc/kubernetes/manifests/*.yaml
+sudo chmod 644 /etc/kubernetes/manifests/*.yaml
+sudo chmod 755 /etc/kubernetes/manifests
+sudo chown root:root /etc/kubernetes/manifests
+sudo systemctl restart kubelet
+sudo systemctl status kubelet
+sudo journalctl -u kubelet -f
+```
+
+
+
+
+make sure ping the API server works
+```bash
+curl -k https://<kubernetes-apiserver-ip-address>:<kubernetes-apiserver-port>/healthz
+curl -k https://<kubernetes-apiserver-ip-address>:<kubernetes-apiserver-port>/livez?verbose
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -234,11 +304,7 @@ Display in console the client key that will allow kubectl to monitor the brand n
 cat client.key
 ```
 
-Install kubectl on control plane for debug purpose
-```bash
-sudo apt install -y kubectl # install kubectl
-kubectl version --client # check installation
-```
+
 
 ```bash
 kubectl config get-contexts
