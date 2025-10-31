@@ -6,3 +6,4 @@ worker-2/.vagrant/
 .terraform/
 .terraform.lock.hcl
 terraform.tfstate
+terraform.tfstate.backup
