@@ -1,39 +1,26 @@
-resource "null_resource" "kadmin" {
-  provisioner "local-exec" {
-    command = "cd admin && vagrant up"
-  }
-
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-}
-
-resource "null_resource" "kmaster" {
-  provisioner "local-exec" {
-    command = "cd master && vagrant up"
-  }
-
-  triggers = {
-    always_run = "${timestamp()}"
+terraform {
+  required_providers {
+    libvirt = {
+      source  = "dmacvicar/libvirt"
+      version = "~> 0.6"
+    }
   }
 }
 
-resource "null_resource" "kworker-1" {
-  provisioner "local-exec" {
-    command = "cd worker-1 && vagrant up"
-  }
-
-  triggers = {
-    always_run = "${timestamp()}"
-  }
+provider "libvirt" {
+  uri = "qemu:///system"
 }
 
-resource "null_resource" "kworker-2" {
-  provisioner "local-exec" {
-    command = "cd worker-2 && vagrant up"
-  }
+# Use an existing image or small cloud image
+resource "libvirt_volume" "test_img" {
+  name   = "test-vm.qcow2"
+  pool   = "default"
+  source = "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img"
+  format = "qcow2"
+}
 
-  triggers = {
-    always_run = "${timestamp()}"
-  }
+resource "libvirt_domain" "test_vm" {
+  name   = "test-vm"
+  memory = 512
+  vcpu   = 1
 }
