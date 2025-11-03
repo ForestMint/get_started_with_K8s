@@ -61,6 +61,23 @@ sudo pacman -S cdrtools
 
 mkisofs -version
 
+## Activate terraform network
+
+### Check if the network exists
+```bash
+sudo virsh net-list --all
+```
+
+### If 'terraform-net' exists but is inactive, start it
+```bash
+sudo virsh net-start terraform-net
+```
+
+### (Optional) To make it start automatically on boot
+```bash
+sudo virsh net-autostart terraform-net
+```
+
 ## Create VM(s) in KVM with Terraform
 
 ```bash
@@ -79,4 +96,11 @@ OR
 
 ```bash
 ./process_qemu_output.sh
+```
+
+## Check VM(s) with virsh
+```bash
+virsh --connect qemu:///system list --all # list all VMs in virsh, the --connect option is because if 'qemu:///system' was used in Terraform file and default for virsh is 'qemu:///session' the virsh list --all will see nothing
+export LIBVIRT_DEFAULT_URI=qemu:///system
+virsh list --all
 ```
