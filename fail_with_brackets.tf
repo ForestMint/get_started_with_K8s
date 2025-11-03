@@ -35,6 +35,11 @@ resource "libvirt_network" "default" {
 
 resource "libvirt_domain" "example" {
 
+
+  provisioner "local-exec" {
+    command = "sudo useradd -m example-user"
+  }
+
   name   = "terraform-vm2"
   memory = 1024
   vcpu   = 1
@@ -46,34 +51,35 @@ resource "libvirt_domain" "example" {
 
 
 
-  # Provisioning with cloud-init to create the SSH user
 
-  cloudinit = {
-    user_data = <<-EOF
-      #cloud-config
 
-      # Create a user
-      users:
-        - name: your_username
-          gecos: "Your Full Name"
-          sudo: ALL=(ALL) NOPASSWD:ALL
-          shell: /bin/bash
-          groups: sudo
-          home: /home/your_username
-          lock_passwd: false
-          ssh-authorized-keys:
-            - ssh-rsa AAAAB3...your_ssh_public_key... user@host
 
-      # Configure SSH
-      ssh_pwauth: false  # Disable password authentication (only allow SSH keys)
-      disable_root: true # Disable root login over SSH
+  /*
+  cloudinit = <<-EOF
+    #cloud-config
 
-      # Optional: Install necessary packages (like sudo)
-      packages:
-        - sudo
-    EOF
-  }
+    # Create a user
+    users:
+      - name: your_username
+        gecos: "Your Full Name"
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash
+        groups: sudo
+        home: /home/your_username
+        lock_passwd: false
+        ssh-authorized-keys:
+          - ssh-rsa AAAAB3...your_ssh_public_key... user@host
 
+    # Configure SSH
+    ssh_pwauth: false  # Disable password authentication (only allow SSH keys)
+    disable_root: true # Disable root login over SSH
+
+    # Optional: Install necessary packages (like sudo)
+    packages:
+      - sudo
+  EOF
+
+  */
 
 
 
