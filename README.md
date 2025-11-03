@@ -47,6 +47,20 @@ Run the GUI manager:
 virt-manager
 ```
 
+## Install Mkisofs
+
+### Update your system
+
+sudo pacman -Syu
+
+### Install cdrtools (contains mkisofs)
+
+sudo pacman -S cdrtools
+
+## Verify installation
+
+mkisofs -version
+
 ## Create VM(s) in KVM with Terraform
 
 ```bash
@@ -59,4 +73,10 @@ yes yes | terraform destroy
 ## Check VM(s) with QEMU
 ```bash
 ps -eo pid,cmd | grep qemu-system
+```
+
+OR
+
+```bash
+./process_qemu_output.sh
 ```
