@@ -55,3 +55,8 @@ terraform plan
 yes yes | terraform apply
 yes yes | terraform destroy
 ```
+
+## Check VM(s) with QEMU
+```bash
+ps -eo pid,cmd | grep qemu-system
+```
