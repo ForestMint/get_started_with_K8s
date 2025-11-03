@@ -24,6 +24,11 @@ resource "libvirt_network" "default" {
   addresses = ["192.168.100.0/24"]
 }
 
+
+
+
+/*
+
 # Define a cloud-init ISO with static IP
 data "template_file" "cloudinit" {
   template = <<EOF
@@ -80,7 +85,7 @@ resource "libvirt_volume" "ubuntu" {
   format = "qcow2"
 }
 
-
+*/
 
 
 
@@ -146,7 +151,7 @@ EOF
 
 resource "libvirt_cloudinit_disk" "commoninit_2" {
   name           = "terraform-vm-2-cloudinit.iso"
-  user_data      = data.template_file.cloudinit.rendered
+  user_data      = data.template_file.cloudinit_2.rendered
   pool           = "default"
 }
 
@@ -156,7 +161,7 @@ resource "libvirt_domain" "example" {
   memory = 1024
   vcpu   = 1
 
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit = libvirt_cloudinit_disk.commoninit_2.id
 
   //ami           = "ami-xxxxxxxx" # Replace with your desired AMI ID
   //instance_type = "t2.micro"     # Modify the instance type as needed
