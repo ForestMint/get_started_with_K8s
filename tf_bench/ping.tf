@@ -11,10 +11,7 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-
-
-
-
+/*
 # Define a network
 resource "libvirt_network" "default" {
   name   = "terraform-net"
@@ -72,6 +69,7 @@ resource "libvirt_domain" "vm1" {
   }
 }
 
+
 # Define the VM disk
 resource "libvirt_volume" "ubuntu" {
   name   = "ubuntu.qcow2"
@@ -80,6 +78,7 @@ resource "libvirt_volume" "ubuntu" {
   format = "qcow2"
 }
 
+*/
 
 
 
@@ -101,33 +100,23 @@ resource "libvirt_volume" "ubuntu" {
 
 
 
+/*
+resource "qemu_image" "ubuntu_base" {
+  source_image = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+  output_image = "${path.module}/ubuntu-base.qcow2"
+}
+*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Define the VM disk
+resource "libvirt_volume" "ubuntu" {
+  name   = "ubuntu.qcow2"
+  pool   = "default"
+  source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
+  format = "qcow2"
+}
 
 # Define a cloud-init ISO with static IP
-data "template_file" "cloudinit_2" {
+data "template_file" "cloudinit" {
   template = <<EOF
 #cloud-config
 hostname: terraform-vm
@@ -144,58 +133,50 @@ network:
 EOF
 }
 
-resource "libvirt_cloudinit_disk" "commoninit_2" {
-  name           = "terraform-vm-2-cloudinit.iso"
+resource "libvirt_cloudinit_disk" "commoninit" {
+  name           = "terraform-vm-cloudinit.iso"
   user_data      = data.template_file.cloudinit.rendered
   pool           = "default"
 }
 
-resource "libvirt_domain" "example" {
-
-  name   = "terraform-vm2"
-  memory = 1024
+resource "libvirt_domain" "vm1" {
+  name        = "alice-vm"
+  memory      = 2048
+  //cores       = 2
   vcpu   = 1
+  disk {
+    volume_id = libvirt_volume.ubuntu.id
+  }
+
+  /*
+  # Cloud-init config
+  cloud_init {
+    user_data = file("${path.module}/cloud_init.cfg")
+  }
+  */
 
   cloudinit = libvirt_cloudinit_disk.commoninit.id
 
-  //ami           = "ami-xxxxxxxx" # Replace with your desired AMI ID
-  //instance_type = "t2.micro"     # Modify the instance type as needed
-  //key_name      = "your-key"     # Replace with your SSH key
-
-  /*
-
-  # User data to configure the instance on boot
-  user_data = <<-EOF
-              #!/bin/bash
-              # Create the user alice and set password
-              useradd -m alice
-              echo "alice:toto" | chpasswd
-
-              # Disable password-based login for root
-              passwd -l root
-
-              # Set the SSH config to allow only alice to SSH in
-              echo "AllowUsers alice" >> /etc/ssh/sshd_config
-              systemctl restart sshd
-            EOF
-
-  */
-
-  /*
-  # Security Group settings
-  security_groups = ["default"] # You can specify your security group here
-  */
-
-  /*
-  # Tags for the instance
-  tags = {
-    Name = "SSH-Only-Alice"
+  network_interface {
+    //model   = "virtio"
+    //network = "user"
+    # Expose SSH on host port 2222
+    /*
+    forward_port {
+      host_port      = 2222
+      guest_port     = 22
+      host_ip        = "0.0.0.0"
+      protocol       = "tcp"
+    }
+    */
   }
-  */
+
+  # VM lifecycle
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
-/*
-output "instance_ip" {
-  value = libvirt_domain.example.public_ip
+output "ssh_connection" {
+  value = "ssh alice@localhost -p 2222 -i id_rsa"
 }
-*/
