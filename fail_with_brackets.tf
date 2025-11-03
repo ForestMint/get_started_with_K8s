@@ -51,12 +51,26 @@ resource "libvirt_domain" "example" {
   cloudinit = {
     user_data = <<-EOF
       #cloud-config
+
+      # Create a user
       users:
-        - name: terraformuser
-          ssh-authorized-keys:
-            - ${file("~/.ssh/id_rsa.pub")}  # Path to your public SSH key
-          sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+        - name: your_username
+          gecos: "Your Full Name"
+          sudo: ALL=(ALL) NOPASSWD:ALL
           shell: /bin/bash
+          groups: sudo
+          home: /home/your_username
+          lock_passwd: false
+          ssh-authorized-keys:
+            - ssh-rsa AAAAB3...your_ssh_public_key... user@host
+
+      # Configure SSH
+      ssh_pwauth: false  # Disable password authentication (only allow SSH keys)
+      disable_root: true # Disable root login over SSH
+
+      # Optional: Install necessary packages (like sudo)
+      packages:
+        - sudo
     EOF
   }
 
