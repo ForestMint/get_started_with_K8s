@@ -36,9 +36,34 @@ resource "libvirt_network" "default" {
 resource "libvirt_domain" "example" {
 
 
+
+
+
+
+
+
+  # Provisioner to connect via SSH and create the user
+  provisioner "remote-exec" {
+    inline = [
+      "sudo useradd -m example-user"
+    ]
+
+    # Connection details
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"  # Change this to the username for your image
+      //private_key = file("~/.ssh/id_rsa")  # Path to your private SSH key
+      //host        = self.network_interface[0].addresses[0]  # Using the first network interface's IP
+      host = "127.0.0.1"
+    }
+  }
+
+
+  /*
   provisioner "local-exec" {
     command = "sudo useradd -m example-user"
   }
+  */
 
   name   = "terraform-vm2"
   memory = 1024
