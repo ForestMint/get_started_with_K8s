@@ -99,8 +99,20 @@ OR
 ```
 
 ## Check VM(s) with virsh
+
+Check the VM runs
 ```bash
 virsh --connect qemu:///system list --all # list all VMs in virsh, the --connect option is because if 'qemu:///system' was used in Terraform file and default for virsh is 'qemu:///session' the virsh list --all will see nothing
 export LIBVIRT_DEFAULT_URI=qemu:///system
 virsh list --all
+```
+
+Check the VM's IP
+```bash
+virsh domifaddr terraform-vm
+```
+
+Ping the VM's IP
+```bash
+ping -c 3 192.168.100.79
 ```
