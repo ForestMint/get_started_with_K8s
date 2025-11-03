@@ -51,5 +51,7 @@ virt-manager
 
 ```bash
 terraform init
+terraform plan
 yes yes | terraform apply
+yes yes | terraform destroy
 ```
