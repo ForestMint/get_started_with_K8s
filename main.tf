@@ -116,14 +116,7 @@ resource "libvirt_domain" "vm1" {
   network_interface {
     network_name   = libvirt_network.default.name
     wait_for_lease = true
-    /*
-    forward_port {
-      host_port      = 2222
-      guest_port     = 22
-      host_ip        = "0.0.0.0"
-      protocol       = "tcp"
-    }
-    */
+
   }
 
   disk {
