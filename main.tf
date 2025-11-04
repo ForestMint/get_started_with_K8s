@@ -264,6 +264,129 @@ resource "libvirt_volume" "data_disk_worker_2" {
 
 
 
+/*
+# Create a large base disk for the admin VM
+resource "libvirt_volume" "ubuntu_disk_1" {
+  name   = "ubuntu-terraform.qcow2.1"
+  pool   = "default"                     # Your libvirt storage pool
+  format = "qcow2"
+  size   = 50 * 1024 * 1024 * 1024       # 50 GB disk
+  base_volume_name = "ubuntu-base.qcow2" # optional: base image (cloud image)
+}
+
+# Create a large base disk for the master VM
+resource "libvirt_volume" "ubuntu_disk_2" {
+  name   = "ubuntu-terraform.qcow2.2"
+  pool   = "default"                     # Your libvirt storage pool
+  format = "qcow2"
+  size   = 50 * 1024 * 1024 * 1024       # 50 GB disk
+  base_volume_name = "ubuntu-base.qcow2" # optional: base image (cloud image)
+}
+
+# Create a large base disk for the worker-1 VM
+resource "libvirt_volume" "ubuntu_disk_3" {
+  name   = "ubuntu-terraform.qcow2.3"
+  pool   = "default"                     # Your libvirt storage pool
+  format = "qcow2"
+  size   = 50 * 1024 * 1024 * 1024       # 50 GB disk
+  base_volume_name = "ubuntu-base.qcow2" # optional: base image (cloud image)
+}
+
+
+# Create a large base disk for the worker-2 VM
+resource "libvirt_volume" "ubuntu_disk_4" {
+  name   = "ubuntu-terraform.qcow2.4"
+  pool   = "default"                     # Your libvirt storage pool
+  format = "qcow2"
+  size   = 50 * 1024 * 1024 * 1024       # 50 GB disk
+  base_volume_name = "ubuntu-base.qcow2" # optional: base image (cloud image)
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Download Ubuntu cloud image and import it into libvirt
+resource "libvirt_volume" "ubuntu_base" {
+  name   = "ubuntu-base.qcow2"
+  pool   = "default"
+  source = "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+  format = "qcow2"
+}
+
+# Clone from base
+resource "libvirt_volume" "ubuntu_disk_1" {
+  name             = "ubuntu-terraform.qcow2.1"
+  pool             = "default"
+  base_volume_id   = libvirt_volume.ubuntu_base.id
+  size             = 50 * 1024 * 1024 * 1024
+}
+
+# Clone from base
+resource "libvirt_volume" "ubuntu_disk_2" {
+  name             = "ubuntu-terraform.qcow2.2"
+  pool             = "default"
+  base_volume_id   = libvirt_volume.ubuntu_base.id
+  size             = 50 * 1024 * 1024 * 1024
+}
+
+# Clone from base
+resource "libvirt_volume" "ubuntu_disk_3" {
+  name             = "ubuntu-terraform.qcow2.3"
+  pool             = "default"
+  base_volume_id   = libvirt_volume.ubuntu_base.id
+  size             = 50 * 1024 * 1024 * 1024
+}
+
+# Clone from base
+resource "libvirt_volume" "ubuntu_disk_4" {
+  name             = "ubuntu-terraform.qcow2.4"
+  pool             = "default"
+  base_volume_id   = libvirt_volume.ubuntu_base.id
+  size             = 50 * 1024 * 1024 * 1024
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -293,15 +416,9 @@ resource "libvirt_domain" "vm1" {
 
   }
 
-  # Attach the OS disk
+  # Attach the disk
   disk {
-    volume_id = libvirt_volume.ubuntu_1.id
-  }
-
-
-  # Attach the extra storage disk
-  disk {
-    volume_id = libvirt_volume.data_disk_admin.id
+    volume_id = libvirt_volume.ubuntu_disk_1.id
   }
 
   console {
@@ -325,14 +442,9 @@ resource "libvirt_domain" "vm2" {
 
   }
 
-  # Attach the OS disk
+  # Attach the disk
   disk {
-    volume_id = libvirt_volume.ubuntu_2.id
-  }
-
-  # Attach the extra storage disk
-  disk {
-    volume_id = libvirt_volume.data_disk_master.id
+    volume_id = libvirt_volume.ubuntu_disk_2.id
   }
 
   console {
@@ -356,14 +468,9 @@ resource "libvirt_domain" "vm3" {
 
   }
 
-  # Attach the OS disk
+  # Attach the disk
   disk {
-    volume_id = libvirt_volume.ubuntu_3.id
-  }
-
-  # Attach the extra storage disk
-  disk {
-    volume_id = libvirt_volume.data_disk_worker_1.id
+    volume_id = libvirt_volume.ubuntu_disk_3.id
   }
 
   console {
@@ -387,14 +494,9 @@ resource "libvirt_domain" "vm4" {
 
   }
 
-  # Attach the OS disk
+  # Attach the disk
   disk {
-    volume_id = libvirt_volume.ubuntu_4.id
-  }
-
-  # Attach the extra storage disk
-  disk {
-    volume_id = libvirt_volume.data_disk_worker_2.id
+    volume_id = libvirt_volume.ubuntu_disk_4.id
   }
 
   console {
