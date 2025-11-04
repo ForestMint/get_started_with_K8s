@@ -84,7 +84,6 @@ sudo virsh net-autostart terraform-net
 terraform init
 terraform plan
 yes yes | terraform apply
-yes yes | terraform destroy
 ```
 
 ## Check VM(s) with QEMU
@@ -115,4 +114,9 @@ virsh domifaddr terraform-vm
 Ping the VM's IP
 ```bash
 ping -c 3 192.168.100.79
+```
+
+## Destroy the VM(s)
+```bash
+yes yes | terraform destroy
 ```
