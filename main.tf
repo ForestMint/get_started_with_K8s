@@ -86,10 +86,7 @@ resource "libvirt_cloudinit_disk" "admininit" {
 }
 
 data "template_file" "user_data_admin" {
-  template = join("\n", [
-    file("${path.module}/cloud_init.cfg"),
-    file("${path.module}/cloud_init_admin.cfg")
-  ])
+  template = file("${path.module}/cloud_init_admin.cfg")
 }
 
 
@@ -100,10 +97,7 @@ resource "libvirt_cloudinit_disk" "masterinit" {
 }
 
 data "template_file" "user_data_master" {
-  template = join("\n", [
-    file("${path.module}/cloud_init.cfg"),
-    file("${path.module}/cloud_init_master.cfg")
-  ])
+  template = file("${path.module}/cloud_init_master.cfg")
 }
 
 
@@ -114,10 +108,7 @@ resource "libvirt_cloudinit_disk" "workerinit" {
 }
 
 data "template_file" "user_data_worker" {
-  template = join("\n", [
-    file("${path.module}/cloud_init.cfg"),
-    file("${path.module}/cloud_init_worker.cfg")
-  ])
+  template = file("${path.module}/cloud_init_worker.cfg")
 }
 
 
@@ -142,37 +133,130 @@ data "template_file" "user_data_worker" {
 
 
 
-# Define the VM disk for admin VM
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Define the OS disk for admin VM
 resource "libvirt_volume" "ubuntu_1" {
   name   = "ubuntu.vm_disk_1"
   pool   = "default"
   source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
   format = "qcow2"
+  
 }
 
-# Define the VM disk for master VM
+# Define the OS disk for master VM
 resource "libvirt_volume" "ubuntu_2" {
   name   = "ubuntu.vm_disk_2"
   pool   = "default"
   source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
   format = "qcow2"
+  
 }
 
-# Define the VM disk for worker-1 VM
+# Define the OS disk for worker-1 VM
 resource "libvirt_volume" "ubuntu_3" {
   name   = "ubuntu.vm_disk_3"
   pool   = "default"
   source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
   format = "qcow2"
+  
 }
 
-# Define the VM disk for worker-2 VM
+# Define the OS disk for worker-2 VM
 resource "libvirt_volume" "ubuntu_4" {
   name   = "ubuntu.vm_disk_4"
   pool   = "default"
   source = "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
   format = "qcow2"
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Create an extra storage (data) disk for admin VM
+resource "libvirt_volume" "data_disk_admin" {
+  name   = "data-disk.qcow2.admin"
+  pool   = "default"
+  size   = 128 * 1024 * 1024 * 1024   # 128 GB
+  format = "qcow2"
+}
+
+# Create an extra storage (data) disk for master VM
+resource "libvirt_volume" "data_disk_master" {
+  name   = "data-disk.qcow2.master"
+  pool   = "default"
+  size   = 128 * 1024 * 1024 * 1024   # 128 GB
+  format = "qcow2"
+}
+
+# Create an extra storage (data) disk for worker-1 VM
+resource "libvirt_volume" "data_disk_worker_1" {
+  name   = "data-disk.qcow2.worker1"
+  pool   = "default"
+  size   = 128 * 1024 * 1024 * 1024   # 128 GB
+  format = "qcow2"
+}
+
+# Create an extra storage (data) disk for worker-2 VM
+resource "libvirt_volume" "data_disk_worker_2" {
+  name   = "data-disk.qcow2.worker2"
+  pool   = "default"
+  size   = 128 * 1024 * 1024 * 1024   # 128 GB
+  format = "qcow2"
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -209,8 +293,15 @@ resource "libvirt_domain" "vm1" {
 
   }
 
+  # Attach the OS disk
   disk {
     volume_id = libvirt_volume.ubuntu_1.id
+  }
+
+
+  # Attach the extra storage disk
+  disk {
+    volume_id = libvirt_volume.data_disk_admin.id
   }
 
   console {
@@ -234,8 +325,14 @@ resource "libvirt_domain" "vm2" {
 
   }
 
+  # Attach the OS disk
   disk {
     volume_id = libvirt_volume.ubuntu_2.id
+  }
+
+  # Attach the extra storage disk
+  disk {
+    volume_id = libvirt_volume.data_disk_master.id
   }
 
   console {
@@ -259,8 +356,14 @@ resource "libvirt_domain" "vm3" {
 
   }
 
+  # Attach the OS disk
   disk {
     volume_id = libvirt_volume.ubuntu_3.id
+  }
+
+  # Attach the extra storage disk
+  disk {
+    volume_id = libvirt_volume.data_disk_worker_1.id
   }
 
   console {
@@ -284,8 +387,14 @@ resource "libvirt_domain" "vm4" {
 
   }
 
+  # Attach the OS disk
   disk {
     volume_id = libvirt_volume.ubuntu_4.id
+  }
+
+  # Attach the extra storage disk
+  disk {
+    volume_id = libvirt_volume.data_disk_worker_2.id
   }
 
   console {
