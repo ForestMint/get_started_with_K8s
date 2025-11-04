@@ -25,6 +25,20 @@ provider "libvirt" {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Define a network
 resource "libvirt_network" "default" {
   name   = "terraform-net"
@@ -51,14 +65,63 @@ resource "libvirt_network" "default" {
 
 
 
-resource "libvirt_cloudinit_disk" "commoninit" {
-  name      = "commoninit.iso"
-  user_data = data.template_file.user_data.rendered
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+resource "libvirt_cloudinit_disk" "admininit" {
+  name      = "admininit.iso"
+  user_data = data.template_file.user_data_admin.rendered
 }
 
-data "template_file" "user_data" {
-  template = file("${path.module}/cloud_init.cfg")
+data "template_file" "user_data_admin" {
+  template = join("\n", [
+    file("${path.module}/cloud_init.cfg"),
+    file("${path.module}/cloud_init_admin.cfg")
+  ])
 }
+
+
+
+resource "libvirt_cloudinit_disk" "masterinit" {
+  name      = "masterinit.iso"
+  user_data = data.template_file.user_data_master.rendered
+}
+
+data "template_file" "user_data_master" {
+  template = join("\n", [
+    file("${path.module}/cloud_init.cfg"),
+    file("${path.module}/cloud_init_master.cfg")
+  ])
+}
+
+
+
+resource "libvirt_cloudinit_disk" "workerinit" {
+  name      = "workerinit.iso"
+  user_data = data.template_file.user_data_worker.rendered
+}
+
+data "template_file" "user_data_worker" {
+  template = join("\n", [
+    file("${path.module}/cloud_init.cfg"),
+    file("${path.module}/cloud_init_worker.cfg")
+  ])
+}
+
+
+
 
 
 
@@ -138,7 +201,7 @@ resource "libvirt_domain" "vm1" {
   memory = 1024
   vcpu   = 1
 
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit = libvirt_cloudinit_disk.admininit.id
 
   network_interface {
     network_name   = libvirt_network.default.name
@@ -163,7 +226,7 @@ resource "libvirt_domain" "vm2" {
   memory = 10240
   vcpu   = 2
 
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit = libvirt_cloudinit_disk.masterinit.id
 
   network_interface {
     network_name   = libvirt_network.default.name
@@ -188,7 +251,7 @@ resource "libvirt_domain" "vm3" {
   memory = 2048
   vcpu   = 2
 
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit = libvirt_cloudinit_disk.workerinit.id
 
   network_interface {
     network_name   = libvirt_network.default.name
@@ -213,7 +276,7 @@ resource "libvirt_domain" "vm4" {
   memory = 2048
   vcpu   = 2
 
-  cloudinit = libvirt_cloudinit_disk.commoninit.id
+  cloudinit = libvirt_cloudinit_disk.workerinit.id
 
   network_interface {
     network_name   = libvirt_network.default.name
