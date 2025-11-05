@@ -106,14 +106,20 @@ export LIBVIRT_DEFAULT_URI=qemu:///system
 virsh list --all
 ```
 
-Check the VM's IP
+Check the other items
 ```bash
-virsh domifaddr terraform-vm
+virsh net-list --all
+virsh vol-list default
 ```
 
-Ping the VM's IP
+Check the VM's IP
 ```bash
-ping -c 3 192.168.100.79
+
+```virsh domifaddr kmaster
+
+Ping the VM's IP address
+```bash
+ping -c 3 <kmaster-IP-address>
 ```
 
 ## Destroy the VM(s)
