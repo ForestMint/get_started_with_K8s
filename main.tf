@@ -76,10 +76,6 @@ resource "libvirt_network" "default" {
 
 
 
-
-
-
-
 resource "libvirt_cloudinit_disk" "admininit" {
   name      = "admininit.iso"
   user_data = data.template_file.user_data_admin.rendered
@@ -102,13 +98,22 @@ data "template_file" "user_data_master" {
 
 
 
-resource "libvirt_cloudinit_disk" "workerinit" {
-  name      = "workerinit.iso"
-  user_data = data.template_file.user_data_worker.rendered
+resource "libvirt_cloudinit_disk" "workerinit_1" {
+  name      = "workerinit_1.iso"
+  user_data = data.template_file.user_data_worker_1.rendered
 }
 
-data "template_file" "user_data_worker" {
-  template = file("${path.module}/cloud_init_worker.cfg")
+data "template_file" "user_data_worker_1" {
+  template = file("${path.module}/cloud_init_worker_1.cfg")
+}
+
+resource "libvirt_cloudinit_disk" "workerinit_2" {
+  name      = "workerinit_2.iso"
+  user_data = data.template_file.user_data_worker_2.rendered
+}
+
+data "template_file" "user_data_worker_2" {
+  template = file("${path.module}/cloud_init_worker_2.cfg")
 }
 
 
@@ -408,6 +413,22 @@ resource "libvirt_domain" "vm1" {
   memory = 1024
   vcpu   = 1
 
+  /*
+  # This provisioner applies only to this VM
+  provisioner "remote-exec" {
+    inline = [
+      "sudo hostnamectl set-hostname friendly.example.com"
+    ]
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file("~/.ssh/id_rsa")
+      host        = self.public_ip
+    }
+  }
+  */
+
   cloudinit = libvirt_cloudinit_disk.admininit.id
 
   network_interface {
@@ -460,7 +481,7 @@ resource "libvirt_domain" "vm3" {
   memory = 2048
   vcpu   = 2
 
-  cloudinit = libvirt_cloudinit_disk.workerinit.id
+  cloudinit = libvirt_cloudinit_disk.workerinit_1.id
 
   network_interface {
     network_name   = libvirt_network.default.name
@@ -486,7 +507,7 @@ resource "libvirt_domain" "vm4" {
   memory = 2048
   vcpu   = 2
 
-  cloudinit = libvirt_cloudinit_disk.workerinit.id
+  cloudinit = libvirt_cloudinit_disk.workerinit_2.id
 
   network_interface {
     network_name   = libvirt_network.default.name
