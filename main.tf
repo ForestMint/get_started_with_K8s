@@ -86,7 +86,13 @@ resource "libvirt_cloudinit_disk" "admininit" {
 }
 
 data "template_file" "user_data_admin" {
-  template = file("${path.module}/cloud_init_admin.cfg")
+  //template = file("${path.module}/cloud_init_admin.cfg")
+
+  template = join("\n", [
+    file("${path.module}/cloud_init_files/cloud_init_add127001ToHosts.cfg"),
+    file("${path.module}/cloud_init_files/cloud_init_setupSSH.cfg"),
+    file("${path.module}/cloud_init_files/cloud_init_installKubectl.cfg")
+  ])
 }
 
 
@@ -97,7 +103,16 @@ resource "libvirt_cloudinit_disk" "masterinit" {
 }
 
 data "template_file" "user_data_master" {
-  template = file("${path.module}/cloud_init_master.cfg")
+  //template = file("${path.module}/cloud_init_master.cfg")
+
+  template = join("\n", [
+    file("${path.module}/cloud_init_files/cloud_init_add127001ToHosts.cfg"),
+    file("${path.module}/cloud_init_files/cloud_init_setupSSH.cfg"),
+    file("${path.module}/cloud_init_files/cloud_init_installDocker.cfg"),
+    file("${path.module}/cloud_init_files/cloud_init_installKubectl.cfg"),
+    file("${path.module}/cloud_init_files/cloud_init_installKubeadmKubeletKubernetesCNI.cfg")
+  ])
+
 }
 
 
@@ -108,7 +123,15 @@ resource "libvirt_cloudinit_disk" "workerinit" {
 }
 
 data "template_file" "user_data_worker" {
-  template = file("${path.module}/cloud_init_worker.cfg")
+  //template = file("${path.module}/cloud_init_worker.cfg")
+
+  template = join("\n", [
+    file("${path.module}/cloud_init_files/cloud_init_add127001ToHosts.cfg"),
+    file("${path.module}/cloud_init_files/cloud_init_setupSSH.cfg"),
+    file("${path.module}/cloud_init_files/cloud_init_installDocker.cfg"),
+    file("${path.module}/cloud_init_files/cloud_init_installKubeadmKubeletKubernetesCNI.cfg")
+  ])
+
 }
 
 
